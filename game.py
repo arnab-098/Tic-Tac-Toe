@@ -34,12 +34,11 @@ class TicTacToe(QWidget):
                 self.grid_layout.addWidget(button, i, j)
 
     def on_click(self, x, y):
-        self.board[x][y] = self.player
-
         button = self.buttons[x][y]
         if button.text() != "":
             return
         button.setText(self.player)
+        self.board[x][y] = self.player
 
         if self.check_winner():
             QMessageBox.information(self, "Game Over", "Player wins!")
