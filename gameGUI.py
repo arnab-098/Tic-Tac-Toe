@@ -3,10 +3,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QGridLayout,
     QMessageBox,
-    QVBoxLayout,
-    QLabel,
 )
-from PyQt5.QtCore import Qt
 
 from minimax import MiniMax
 from resultChecker import ResultChecker
@@ -15,7 +12,7 @@ from resultChecker import ResultChecker
 class TicTacToe(QWidget):
     def __init__(self, size=3):
         super().__init__()
-        self.gridSize: int = int(size)
+        self.gridSize = size
         self.board = [["_" for _ in range(self.gridSize)] for _ in range(self.gridSize)]
         self.minimaxAI = MiniMax(self.gridSize)
         self.checker = ResultChecker(self.gridSize)

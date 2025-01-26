@@ -1,4 +1,3 @@
-from ast import BitOr
 from resultChecker import ResultChecker
 
 
@@ -6,16 +5,18 @@ class MiniMax:
     def __init__(self, size: int) -> None:
         self.player = "X"
         self.computer = "O"
-        self.size = size
+        self.SIZE = size
         self.checker = ResultChecker(size)
+        self.MIN = -1000
+        self.MAX = 1000
 
     def setSymbols(self, player, computer):
         self.player = player
         self.computer = computer
 
     def isMovesLeft(self, board):
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(self.SIZE):
+            for j in range(self.SIZE):
                 if board[i][j] == "_":
                     return True
         return False
@@ -24,59 +25,70 @@ class MiniMax:
         self.checker.check(board)
         result = self.checker.getResult()
         if result == self.computer:
-            return 10
+            return 20
         elif result == self.player:
-            return -10
+            return -20
         return 0
 
-    def minimax(self, board, depth, isMax):
+    def minimax(self, board, depth, alpha, beta, isMax):
         score = self.evaluate(board)
-
-        if score == 10:
+        if score == 20:
             return score - depth
-
-        if score == -10:
+        if score == -20:
             return score + depth
-
         if not (self.isMovesLeft(board)):
             return 0
 
         if isMax:
-            best = -1000
-
-            for i in range(self.size):
-                for j in range(self.size):
-                    if board[i][j] == "_":
-                        board[i][j] = self.computer
-
-                        best = max(best, self.minimax(board, depth + 1, not isMax))
-
-                        board[i][j] = "_"
-            return best
-
+            return self.maxTurn(board, depth, alpha, beta, isMax)
         else:
-            best = 1000
+            return self.minTurn(board, depth, alpha, beta, isMax)
 
-            for i in range(self.size):
-                for j in range(self.size):
-                    if board[i][j] == "_":
-                        board[i][j] = self.player
+    def maxTurn(self, board, depth, alpha, beta, isMax):
+        best = self.MIN
+        for i in range(self.SIZE):
+            for j in range(self.SIZE):
+                if board[i][j] == "_":
+                    board[i][j] = self.computer
+                    best = max(
+                        best, self.minimax(board, depth + 1, alpha, beta, not isMax)
+                    )
+                    board[i][j] = "_"
 
-                        best = min(best, self.minimax(board, depth + 1, not isMax))
+                    alpha = max(alpha, best)
+                    if beta <= alpha:
+                        return best
 
-                        board[i][j] = "_"
-            return best
+        return best
+
+    def minTurn(self, board, depth, alpha, beta, isMax):
+        best = self.MAX
+
+        for i in range(self.SIZE):
+            for j in range(self.SIZE):
+                if board[i][j] == "_":
+                    board[i][j] = self.player
+                    best = min(
+                        best, self.minimax(board, depth + 1, alpha, beta, not isMax)
+                    )
+                    board[i][j] = "_"
+
+                    beta = min(beta, best)
+                    if beta <= alpha:
+                        return best
+
+        return best
 
     def findBestMove(self, board):
-        bestVal = -1000
+        bestVal = self.MIN
         bestMove = (-1, -1)
 
-        for i in range(self.size):
-            for j in range(self.size):
+        for i in range(self.SIZE):
+            for j in range(self.SIZE):
                 if board[i][j] == "_":
                     board[i][j] = self.computer
 
-                    moveVal = self.minimax(board, 0, False)
+                    moveVal = self.minimax(board, 0, self.MIN, self.MAX, False)
 
                     board[i][j] = "_"
 
