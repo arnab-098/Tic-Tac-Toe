@@ -4,6 +4,7 @@ import random
 class ZobristHash:
     def __init__(self, size: int) -> None:
         self.SIZE = size
+        self.initTable()
         return
 
     def randomInt(self):
@@ -11,10 +12,10 @@ class ZobristHash:
         max = pow(2, 64)
         return random.randint(min, max)
 
-    def indexOf(self, piece):
-        if piece == "X":
+    def indexOf(self, symbol):
+        if symbol == "X":
             return 0
-        elif piece == "O":
+        elif symbol == "O":
             return 1
         else:
             return -1
@@ -26,10 +27,10 @@ class ZobristHash:
         ]
 
     def computeHash(self, board):
-        h = 0
+        hash = 0
         for i in range(self.SIZE):
             for j in range(self.SIZE):
-                if board[i][j] != "-":
-                    piece = self.indexOf(board[i][j])
-                    h ^= self.ZobristTable[i][j][piece]
-        return h
+                if board[i][j] != "_":
+                    idx = self.indexOf(board[i][j])
+                    hash ^= self.ZobristTable[i][j][idx]
+        return hash

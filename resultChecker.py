@@ -14,12 +14,12 @@ class ResultChecker:
         self.result = self.checkDiagonals()
         if self.result != "_":
             return
-        self.result = "_" if self.moveLeft() else "D"
+        self.result = "_" if self.isMovesLeft() else "D"
 
     def getResult(self):
         return self.result
 
-    def moveLeft(self):
+    def isMovesLeft(self):
         for i in range(self.size):
             for j in range(self.size):
                 if self.board[i][j] == "_":

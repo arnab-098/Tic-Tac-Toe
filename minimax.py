@@ -11,54 +11,41 @@ class MiniMax:
         self.MAX = 1000
         self.checker = ResultChecker(size)
         self.hash = ZobristHash(size)
-        self.hash.initTable()
-        self.moveSet = dict()
+        self.transpositionTable = dict()
 
     def setSymbols(self, player, computer):
         self.player = player
         self.computer = computer
 
-    def isMovesLeft(self, board):
-        for i in range(self.SIZE):
-            for j in range(self.SIZE):
-                if board[i][j] == "_":
-                    return True
-        return False
-
-    def evaluate(self, board):
-        self.checker.check(board)
-        result = self.checker.getResult()
-        if result == self.computer:
-            return 20
-        elif result == self.player:
-            return -20
-        return 0
-
-    def minimax(self, board, depth, alpha, beta, isMax):
+    def minimax(self, board, depth, alpha, beta, isMax) -> int:
         hash = self.hash.computeHash(board)
-        if hash in self.moveSet:
-            return self.moveSet[hash]
 
-        score = self.evaluate(board)
-        if score == 20:
-            self.moveSet[hash] = 20
-            return score - depth
-        if score == -20:
-            self.moveSet[hash] = -20
-            return score + depth
-        if not (self.isMovesLeft(board)):
-            self.moveSet[hash] = 0
-            return 0
+        if hash in self.transpositionTable:
+            return self.transpositionTable[hash]
 
-        if isMax:
-            self.moveSet[hash] = self.maxTurn(board, depth, alpha, beta, isMax)
-            return self.moveSet[hash]
+        self.checker.check(board)
+        boardResult = self.checker.getResult()
+
+        if boardResult == self.computer:
+            self.transpositionTable[hash] = 10 - depth
+        elif boardResult == self.player:
+            self.transpositionTable[hash] = -10 + depth
+        elif boardResult == "D":
+            self.transpositionTable[hash] = 0
+        elif isMax:
+            self.transpositionTable[hash] = self.maxTurn(
+                board, depth, alpha, beta, isMax
+            )
         else:
-            self.moveSet[hash] = self.minTurn(board, depth, alpha, beta, isMax)
-            return self.moveSet[hash]
+            self.transpositionTable[hash] = self.minTurn(
+                board, depth, alpha, beta, isMax
+            )
 
-    def maxTurn(self, board, depth, alpha, beta, isMax):
+        return self.transpositionTable[hash]
+
+    def maxTurn(self, board, depth, alpha, beta, isMax) -> int:
         best = self.MIN
+
         for i in range(self.SIZE):
             for j in range(self.SIZE):
                 if board[i][j] == "_":
@@ -74,7 +61,7 @@ class MiniMax:
 
         return best
 
-    def minTurn(self, board, depth, alpha, beta, isMax):
+    def minTurn(self, board, depth, alpha, beta, isMax) -> int:
         best = self.MAX
 
         for i in range(self.SIZE):
