@@ -1,46 +1,32 @@
+from ast import BitOr
+from resultChecker import ResultChecker
+
+
 class MiniMax:
-    def __init__(self) -> None:
+    def __init__(self, size: int) -> None:
         self.player = "X"
         self.computer = "O"
+        self.size = size
+        self.checker = ResultChecker(size)
 
     def setSymbols(self, player, computer):
         self.player = player
         self.computer = computer
 
     def isMovesLeft(self, board):
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.size):
+            for j in range(self.size):
                 if board[i][j] == "_":
                     return True
         return False
 
-    def evaluate(self, b):
-        for row in range(3):
-            if b[row][0] == b[row][1] and b[row][1] == b[row][2]:
-                if b[row][0] == self.computer:
-                    return 10
-                elif b[row][0] == self.player:
-                    return -10
-
-        for col in range(3):
-            if b[0][col] == b[1][col] and b[1][col] == b[2][col]:
-                if b[0][col] == self.computer:
-                    return 10
-                elif b[0][col] == self.player:
-                    return -10
-
-        if b[0][0] == b[1][1] and b[1][1] == b[2][2]:
-            if b[0][0] == self.computer:
-                return 10
-            elif b[0][0] == self.player:
-                return -10
-
-        if b[0][2] == b[1][1] and b[1][1] == b[2][0]:
-            if b[0][2] == self.computer:
-                return 10
-            elif b[0][2] == self.player:
-                return -10
-
+    def evaluate(self, board):
+        self.checker.check(board)
+        result = self.checker.getResult()
+        if result == self.computer:
+            return 10
+        elif result == self.player:
+            return -10
         return 0
 
     def minimax(self, board, depth, isMax):
@@ -58,8 +44,8 @@ class MiniMax:
         if isMax:
             best = -1000
 
-            for i in range(3):
-                for j in range(3):
+            for i in range(self.size):
+                for j in range(self.size):
                     if board[i][j] == "_":
                         board[i][j] = self.computer
 
@@ -71,8 +57,8 @@ class MiniMax:
         else:
             best = 1000
 
-            for i in range(3):
-                for j in range(3):
+            for i in range(self.size):
+                for j in range(self.size):
                     if board[i][j] == "_":
                         board[i][j] = self.player
 
@@ -85,8 +71,8 @@ class MiniMax:
         bestVal = -1000
         bestMove = (-1, -1)
 
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.size):
+            for j in range(self.size):
                 if board[i][j] == "_":
                     board[i][j] = self.computer
 

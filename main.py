@@ -4,15 +4,18 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 
-from game import TicTacToe
+from menu import MenuScreen
 
 
 def main() -> None:
-    # Driver code
-    app = QApplication(sys.argv)
-    window = TicTacToe()
-    window.show()
-    sys.exit(app.exec_())
+    try:
+        app = QApplication(sys.argv)
+        menu = MenuScreen()
+        menu.show()
+        sys.exit(app.exec_())
+    except KeyboardInterrupt:
+        print("Terminating Program")
+        sys.exit()
 
 
 if __name__ == "__main__":

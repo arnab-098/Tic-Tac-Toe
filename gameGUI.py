@@ -1,18 +1,25 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QGridLayout, QMessageBox
+from PyQt5.QtWidgets import (
+    QWidget,
+    QPushButton,
+    QGridLayout,
+    QMessageBox,
+    QVBoxLayout,
+    QLabel,
+)
+from PyQt5.QtCore import Qt
 
 from minimax import MiniMax
+from resultChecker import ResultChecker
 
 
 class TicTacToe(QWidget):
-    def __init__(self):
+    def __init__(self, size=3):
         super().__init__()
+        self.gridSize: int = int(size)
+        self.board = [["_" for _ in range(self.gridSize)] for _ in range(self.gridSize)]
+        self.minimaxAI = MiniMax(self.gridSize)
+        self.checker = ResultChecker(self.gridSize)
         self.init_ui()
-        self.board = [
-            ["_", "_", "_"],
-            ["_", "_", "_"],
-            ["_", "_", "_"],
-        ]
-        self.minimaxAI = MiniMax()
 
     def init_ui(self):
         self.setWindowTitle("Tic Tac Toe")
@@ -21,12 +28,15 @@ class TicTacToe(QWidget):
         self.grid_layout = QGridLayout()
         self.setLayout(self.grid_layout)
 
-        self.buttons = [[QPushButton("") for _ in range(3)] for _ in range(3)]
+        self.buttons = [
+            [QPushButton("") for _ in range(self.gridSize)]
+            for _ in range(self.gridSize)
+        ]
         self.player = "X"
         self.computer = "O"
 
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.gridSize):
+            for j in range(self.gridSize):
                 button = self.buttons[i][j]
                 button.setFixedSize(100, 100)
                 button.setStyleSheet("font-size: 24px;")
@@ -40,6 +50,7 @@ class TicTacToe(QWidget):
         button.setText(self.player)
         self.board[x][y] = self.player
 
+        self.checker.check(self.board)
         if self.check_winner():
             QMessageBox.information(self, "Game Over", "Player wins!")
             self.reset_board()
@@ -65,6 +76,7 @@ class TicTacToe(QWidget):
         button = self.buttons[x][y]
         button.setText(self.computer)
 
+        self.checker.check(self.board)
         if self.check_winner():
             QMessageBox.information(self, "Game Over", "Computer wins!")
             self.reset_board()
@@ -75,25 +87,16 @@ class TicTacToe(QWidget):
             self.playerTurn()
 
     def check_winner(self):
-        for i in range(3):
-            if self.board[i][0] == self.board[i][1] == self.board[i][2] != "_":
-                return True
-            if self.board[0][i] == self.board[1][i] == self.board[2][i] != "_":
-                return True
-
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] != "_":
-            return True
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] != "_":
-            return True
-
-        return False
+        O_win = self.checker.getResult() == "O"
+        X_win = self.checker.getResult() == "X"
+        return O_win or X_win
 
     def check_draw(self):
-        return all(self.board[i][j] != "_" for i in range(3) for j in range(3))
+        return self.checker.getResult() == "D"
 
     def reset_board(self):
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.gridSize):
+            for j in range(self.gridSize):
                 self.buttons[i][j].setText("")
                 self.board[i][j] = "_"
 
