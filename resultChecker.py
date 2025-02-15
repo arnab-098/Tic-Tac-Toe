@@ -4,66 +4,69 @@ class ResultChecker:
         self.result = str()
 
     def check(self, board: list[list[str]]):
-        self.board = board
-        self.result = self.checkRows()
+        self.result = self.checkRows(board)
         if self.result != "_":
             return
-        self.result = self.checkColumns()
+        self.result = self.checkColumns(board)
         if self.result != "_":
             return
-        self.result = self.checkDiagonals()
+        self.result = self.checkDiagonals(board)
         if self.result != "_":
             return
-        self.result = "_" if self.isMovesLeft() else "D"
+        if self.isMovesLeft(board):
+            self.result = "_"
+        else:
+            self.result = "D"
 
     def getResult(self):
         return self.result
 
-    def isMovesLeft(self):
+    def isMovesLeft(self, board):
         for i in range(self.size):
             for j in range(self.size):
-                if self.board[i][j] == "_":
+                if board[i][j] == "_":
                     return True
+        return False
 
-    def checkRows(self):
+    def checkRows(self, board):
         for i in range(self.size):
-            key = self.board[i][0]
+            key = board[i][0]
             if key == "_":
                 continue
-            for j in range(self.size):
-                if self.board[i][j] != key:
+            for j in range(1, self.size):
+                if board[i][j] != key:
                     key = "_"
                     break
             if key != "_":
                 return key
         return "_"
 
-    def checkColumns(self):
+    def checkColumns(self, board):
         for i in range(self.size):
-            key = self.board[0][i]
+            key = board[0][i]
             if key == "_":
                 continue
-            for j in range(self.size):
-                if self.board[j][i] != key:
+            for j in range(1, self.size):
+                if board[j][i] != key:
                     key = "_"
                     break
             if key != "_":
                 return key
         return "_"
 
-    def checkDiagonals(self):
-        if self.board[0][0] == "_" or self.board[0][-1] == "_":
+    def checkDiagonals(self, board):
+        if board[0][0] == "_" or board[0][-1] == "_":
             return "_"
-        key = self.board[0][0]
-        for i in range(self.size):
-            if self.board[i][i] != key:
+        key = board[0][0]
+        for i in range(1, self.size):
+            if board[i][i] != key:
                 key = "_"
                 break
         if key != "_":
             return key
-        key = self.board[0][-1]
-        for i in range(self.size):
-            if self.board[i][-1 * i - 1] != key:
+        key = board[0][-1]
+        for i in range(1, self.size):
+            if board[i][-1 * i - 1] != key:
                 key = "_"
                 break
         return key

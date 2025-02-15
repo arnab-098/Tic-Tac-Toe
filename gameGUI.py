@@ -5,16 +5,20 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 
-from minimax import MiniMax
+from minimaxAI import MiniMaxAI
 from resultChecker import ResultChecker
 
 
 class TicTacToe(QWidget):
+    player = "X"
+    computer = "O"
+    playerStarts = True
+
     def __init__(self, size=3):
         super().__init__()
         self.gridSize = size
         self.board = [["_" for _ in range(self.gridSize)] for _ in range(self.gridSize)]
-        self.minimaxAI = MiniMax(self.gridSize)
+        self.AI = MiniMaxAI(self.gridSize)
         self.checker = ResultChecker(self.gridSize)
         self.init_ui()
 
@@ -29,8 +33,6 @@ class TicTacToe(QWidget):
             [QPushButton("") for _ in range(self.gridSize)]
             for _ in range(self.gridSize)
         ]
-        self.player = "X"
-        self.computer = "O"
 
         for i in range(self.gridSize):
             for j in range(self.gridSize):
@@ -67,7 +69,7 @@ class TicTacToe(QWidget):
             for j in range(3):
                 self.buttons[i][j].setEnabled(False)
 
-        x, y = self.minimaxAI.findBestMove(self.board)
+        x, y = self.AI.findBestMove(self.board)
 
         self.board[x][y] = self.computer
         button = self.buttons[x][y]
@@ -97,13 +99,9 @@ class TicTacToe(QWidget):
                 self.buttons[i][j].setText("")
                 self.board[i][j] = "_"
 
-        self.swap_symbols()
+        self.playerStarts = not self.playerStarts
 
-        if self.computer == "X":
-            self.computerTurn()
-        else:
+        if self.playerStarts:
             self.playerTurn()
-
-    def swap_symbols(self):
-        self.player, self.computer = self.computer, self.player
-        self.minimaxAI.setSymbols(self.player, self.computer)
+        else:
+            self.computerTurn()
