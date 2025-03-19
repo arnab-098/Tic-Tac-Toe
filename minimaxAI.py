@@ -175,8 +175,6 @@ class MiniMaxAI:
         with mp.Pool(mp.cpu_count()) as pool:
             results = pool.map(minimax_worker, args)
 
-        print(results)
-
         for i, j, moveVal in results:
             if moveVal > bestVal:
                 bestMove = (i, j)
