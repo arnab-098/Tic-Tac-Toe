@@ -44,4 +44,9 @@ class MenuScreen(QWidget):
     def start_game(self, size):
         self.hide()
         self.game_window = TicTacToe(size)
+        self.game_window.backToMenu.connect(self.show_menu)
         self.game_window.show()
+
+    def show_menu(self):
+        self.game_window.close()
+        self.show()

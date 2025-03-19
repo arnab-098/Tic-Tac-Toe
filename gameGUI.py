@@ -2,14 +2,18 @@ from PyQt5.QtWidgets import (
     QWidget,
     QPushButton,
     QGridLayout,
+    QVBoxLayout,
     QMessageBox,
 )
+from PyQt5.QtCore import pyqtSignal
 
 from minimaxAI import MiniMaxAI
 from resultChecker import ResultChecker
 
 
 class TicTacToe(QWidget):
+    backToMenu = pyqtSignal()  # Signal to notify when back button is pressed
+
     player = "X"
     computer = "O"
     playerStarts = True
@@ -24,10 +28,17 @@ class TicTacToe(QWidget):
 
     def init_ui(self):
         self.setWindowTitle("Tic Tac Toe")
-        self.setGeometry(100, 100, 300, 300)
+        self.setGeometry(
+            100, 100, 300, 350
+        )  # Adjusted height to make space for back button
 
+        # Main layout (vertical)
+        self.main_layout = QVBoxLayout()
+        self.setLayout(self.main_layout)
+
+        # Grid layout for board
         self.grid_layout = QGridLayout()
-        self.setLayout(self.grid_layout)
+        self.main_layout.addLayout(self.grid_layout)
 
         self.buttons = [
             [QPushButton("") for _ in range(self.gridSize)]
@@ -41,6 +52,12 @@ class TicTacToe(QWidget):
                 button.setStyleSheet("font-size: 24px;")
                 button.clicked.connect(lambda checked, x=i, y=j: self.on_click(x, y))
                 self.grid_layout.addWidget(button, i, j)
+
+        # Back button layout
+        self.back_button = QPushButton("Back to Menu")
+        self.back_button.setFixedHeight(40)
+        self.back_button.clicked.connect(self.back_to_menu)
+        self.main_layout.addWidget(self.back_button)
 
     def on_click(self, x, y):
         button = self.buttons[x][y]
@@ -60,13 +77,13 @@ class TicTacToe(QWidget):
             self.computerTurn()
 
     def playerTurn(self):
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.gridSize):
+            for j in range(self.gridSize):
                 self.buttons[i][j].setEnabled(True)
 
     def computerTurn(self):
-        for i in range(3):
-            for j in range(3):
+        for i in range(self.gridSize):
+            for j in range(self.gridSize):
                 self.buttons[i][j].setEnabled(False)
 
         x, y = self.AI.findBestMove(self.board)
@@ -86,9 +103,7 @@ class TicTacToe(QWidget):
             self.playerTurn()
 
     def check_winner(self):
-        O_win = self.checker.getResult() == "O"
-        X_win = self.checker.getResult() == "X"
-        return O_win or X_win
+        return self.checker.getResult() in ["O", "X"]
 
     def check_draw(self):
         return self.checker.getResult() == "D"
@@ -105,3 +120,7 @@ class TicTacToe(QWidget):
             self.playerTurn()
         else:
             self.computerTurn()
+
+    def back_to_menu(self):
+        self.backToMenu.emit()
+        self.close()
