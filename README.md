@@ -18,7 +18,7 @@ A Python-based implementation of the classic Tic-Tac-Toe game featuring a graphi
 * **Programming Language**: Python
 * **GUI Library**: Tkinter
 * **AI Algorithm**: Minimax
-* **Hashing Technique**: Zobrist Hashing([GitHub][2], [GitHub][3], [GitHub][1])
+* **Hashing Technique**: Zobrist Hashing
 
 ## 📁 Project Structure
 
@@ -71,10 +71,3 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ---
 
 For more projects by the author, visit [arnab-098's GitHub profile](https://github.com/arnab-098/).
-
----
-
-[1]: https://github.com/Arnab2003/Ultimate-tic-tac-toe?utm_source=chatgpt.com "GitHub - Arnab2003/Ultimate-tic-tac-toe: Ultimate Tic Tac Toe is an ..."
-[2]: https://github.com/Arnab0089/Tic-Tac-Toe/issues?utm_source=chatgpt.com "Issues · Arnab0089/Tic-Tac-Toe · GitHub"
-[3]: https://github.com/arnab-098/Tic-Tac-Toe?utm_source=chatgpt.com "GitHub - arnab-098/Tic-Tac-Toe"
-[4]: https://github.com/LahaArnab/Tic-Tac-Toe-game?utm_source=chatgpt.com "LahaArnab/Tic-Tac-Toe-game: #tic_tac_toe created by Arnab - GitHub"
